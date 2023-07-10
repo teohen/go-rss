@@ -20,6 +20,7 @@ func databaseUserToUser(dbUser UsersDBModel) User {
 
 type Feed struct {
 	ID        string `json:"id"`
+	Name      string `json:"name"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 	URL       string `json:"url"`
@@ -29,6 +30,7 @@ type Feed struct {
 func databaseFeedToFeed(dbFeed FeedsDBModel) Feed {
 	return Feed{
 		ID:        dbFeed.Id,
+		Name:      dbFeed.Name,
 		CreatedAt: dbFeed.CreatedAt,
 		UpdatedAt: dbFeed.UpdatedAt,
 		URL:       dbFeed.URL,
@@ -43,4 +45,22 @@ func databaseFeedsToFeeds(dbFeeds []FeedsDBModel) []Feed {
 		feeds = append(feeds, databaseFeedToFeed(dbFeed))
 	}
 	return feeds
+}
+
+type FeedFollow struct {
+	ID        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	UserId    string `json:"user_id"`
+	FeedId    string `json:"feed_id"`
+}
+
+func databaseFeedFollowToFeedFollow(dbFeedFollow FeedFollowsDBModel) FeedFollow {
+	return FeedFollow{
+		ID:        dbFeedFollow.Id,
+		CreatedAt: dbFeedFollow.CreatedAt,
+		UpdatedAt: dbFeedFollow.UpdatedAt,
+		UserId:    dbFeedFollow.UserId,
+		FeedId:    dbFeedFollow.FeedId,
+	}
 }
