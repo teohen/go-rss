@@ -7,16 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/teohen/go-rss/auth"
 )
-
-type UsersDBModel struct {
-	UUID      string
-	Name      string
-	CreatedAt string
-	UpdatedAt string
-	ApiKey    string
-}
 
 func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 	type Parameters struct {
@@ -33,12 +24,12 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	user, err := apiCfg.dbOperator.save(UsersDBModel{
+	user, err := apiCfg.dbUser.save(UsersDBModel{
 		Name:      params.Name,
 		UUID:      uuid.NewString(),
 		CreatedAt: time.Now().String(),
 		UpdatedAt: time.Now().String(),
-	})
+	}, apiCfg.dbOperator)
 
 	if err != nil {
 		respondWithError(w, 400, fmt.Sprintf("Error creatig user"))
@@ -48,25 +39,6 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 	respondWithJSON(w, 201, databaseUserToUser(user))
 }
 
-func (apiCfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
-	apiKey, err := auth.GetApiKey(r.Header)
-
-	if err != nil {
-		respondWithError(w, 403, fmt.Sprintf("Unauthorized"))
-		return
-	}
-
-	user, err := apiCfg.dbOperator.getBy(apiKey)
-
-	if err != nil {
-		respondWithError(w, 500, fmt.Sprintf("Internal Server Error"))
-		return
-	}
-
-	if user.Name == "" {
-		respondWithError(w, 400, fmt.Sprintf("Bad Request"))
-		return
-	}
-
+func (apiCfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, user UsersDBModel) {
 	respondWithJSON(w, 200, databaseUserToUser(user))
 }

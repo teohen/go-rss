@@ -11,7 +11,9 @@ import (
 )
 
 type apiConfig struct {
+	dbUser     *DBUser
 	dbOperator *DB
+	dbFeed     *DBFeed
 }
 
 func main() {
@@ -23,10 +25,13 @@ func main() {
 	}
 
 	dbOperator := &DB{}
-	dbOperator.connected = true
+	dbUser := &DBUser{}
+	dbFeed := &DBFeed{}
 
 	apiCfg := apiConfig{
+		dbUser:     dbUser,
 		dbOperator: dbOperator,
+		dbFeed:     dbFeed,
 	}
 
 	router := chi.NewRouter()
@@ -44,7 +49,10 @@ func main() {
 	v1Router.Get("/health-status", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
 	v1Router.Post("/users", apiCfg.handlerCreateUser)
-	v1Router.Get("/users", apiCfg.handlerGetUser)
+	v1Router.Get("/users", apiCfg.middlewareAuth(apiCfg.handlerGetUser))
+	v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.handlerCreateFeed))
+	v1Router.Get("/feeds", apiCfg.handlerGetAllFeeds)
+
 	router.Mount("/v1", v1Router)
 
 	server := &http.Server{
