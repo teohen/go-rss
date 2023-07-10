@@ -11,9 +11,10 @@ import (
 )
 
 type apiConfig struct {
-	dbUser     *DBUser
-	dbOperator *DB
-	dbFeed     *DBFeed
+	dbUser       *DBUser
+	dbOperator   *DB
+	dbFeed       *DBFeed
+	dbFeedFollow *DBFeedFollows
 }
 
 func main() {
@@ -27,11 +28,13 @@ func main() {
 	dbOperator := &DB{}
 	dbUser := &DBUser{}
 	dbFeed := &DBFeed{}
+	dbFeedFollows := &DBFeedFollows{}
 
 	apiCfg := apiConfig{
-		dbUser:     dbUser,
-		dbOperator: dbOperator,
-		dbFeed:     dbFeed,
+		dbUser:       dbUser,
+		dbOperator:   dbOperator,
+		dbFeed:       dbFeed,
+		dbFeedFollow: dbFeedFollows,
 	}
 
 	router := chi.NewRouter()
