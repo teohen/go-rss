@@ -51,8 +51,8 @@ func (dbFeedFollow *DBFeedFollows) save(feedFollow FeedFollowsDBModel, dbOperato
 	return feedFollow, nil
 }
 
-func (dbFeedFollow *DBFeedFollows) getByIdUser(idUser string, dbOperator *DB) (FeedFollowsDBModel, error) {
-	var feedFollowModel FeedFollowsDBModel
+func (dbFeedFollow *DBFeedFollows) getByIdUser(idUser string, dbOperator *DB) ([]FeedFollowsDBModel, error) {
+	var feedFollowModel []FeedFollowsDBModel
 
 	if !dbOperator.isConnected() {
 		dbOperator.connect()
@@ -69,7 +69,7 @@ func (dbFeedFollow *DBFeedFollows) getByIdUser(idUser string, dbOperator *DB) (F
 
 	for _, feedFollow := range dbFeedFollow.collection {
 		if feedFollow.UserId == idUser {
-			return feedFollow, nil
+			feedFollowModel = append(feedFollowModel, feedFollow)
 		}
 	}
 
@@ -124,4 +124,41 @@ func (dbFeedFollow *DBFeedFollows) getByIdUserAndIdFeed(idUser string, idFeed st
 	}
 
 	return feedFollowModel, nil
+}
+
+func (dbFeedFollow *DBFeedFollows) deleteFeedFollow(idUser string, idFeedfollow string, dbOperator *DB) (bool, error) {
+	if !dbOperator.isConnected() {
+		dbOperator.connect()
+	}
+
+	msg, err := dbOperator.execute(fmt.Sprintf("Id User: %s - Id Feedfollow: %s", idUser, idFeedfollow), "delete feed follow")
+
+	if err != nil {
+		fmt.Println(fmt.Printf("ERROR on deleteFeedFollow: %s", err))
+		return false, errors.New("error trying to delete the feed follow")
+	}
+
+	fmt.Println(fmt.Sprintf("SUCCESS: %s", msg))
+
+	ffToRemove := -1
+
+	for i, ffm := range dbFeedFollow.collection {
+		if ffm.UserId == idUser && ffm.Id == idFeedfollow {
+			ffToRemove = i
+		}
+	}
+
+	if ffToRemove < 0 {
+		fmt.Println(fmt.Printf("ERROR on deleteFeedFollow: not found on DB"))
+		return false, errors.New("not found on DB")
+
+	}
+
+	if ffToRemove > -1 {
+		dbFeedFollow.collection[ffToRemove] = dbFeedFollow.collection[len(dbFeedFollow.collection)-1]
+		dbFeedFollow.collection = dbFeedFollow.collection[:len(dbFeedFollow.collection)-1]
+	}
+
+	return true, nil
+
 }
