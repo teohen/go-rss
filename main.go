@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -19,20 +18,20 @@ type apiConfig struct {
 }
 
 type Bar struct {
-	title       string
-	link        string
-	description string
-	language    string
+	Title       string `json:"title"`
+	Link        string `json:"link"`
+	Description string `json:"description"`
+	Language    string `json:"language"`
 }
 
 func main() {
 
 	// feed, erro := urlToFeed("https://raw.githubusercontent.com/teohen/go-rss/main/posts/posts.json")
-	foo := Bar{}
+	foo := []Bar{}
 
-	getJson("https://raw.githubusercontent.com/teohen/go-rss/main/posts/posts.json", &foo)
+	getJson("https://demo7799712.mockable.io/posts", &foo)
 
-	fmt.Printf("RES: %v", foo)
+	println(foo[1].Title)
 	/* if erro != nil {
 		log.Fatal(erro)
 	}
