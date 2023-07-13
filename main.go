@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +18,27 @@ type apiConfig struct {
 	dbFeedFollow *DBFeedFollows
 }
 
+type Bar struct {
+	title       string
+	link        string
+	description string
+	language    string
+}
+
 func main() {
+
+	// feed, erro := urlToFeed("https://raw.githubusercontent.com/teohen/go-rss/main/posts/posts.json")
+	foo := Bar{}
+
+	getJson("https://raw.githubusercontent.com/teohen/go-rss/main/posts/posts.json", &foo)
+
+	fmt.Printf("RES: %v", foo)
+	/* if erro != nil {
+		log.Fatal(erro)
+	}
+
+	fmt.Println(feed) */
+
 	godotenv.Load()
 
 	portString := os.Getenv("PORT")
