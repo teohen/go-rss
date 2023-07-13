@@ -12,6 +12,7 @@ type RSSFeed struct {
 	Link        string
 	Description string
 	Language    string
+	CreatedAt   string `json:"created_at"`
 }
 
 func urlToFeed(url string) ([]RSSFeed, error) {

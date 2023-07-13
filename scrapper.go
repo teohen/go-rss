@@ -47,7 +47,29 @@ func scrapeFeed(wg *sync.WaitGroup, apiCfg apiConfig, feed FeedsDBModel) {
 	}
 
 	for _, post := range rssFeed {
-		log.Println("Post found", post.Title)
+		dbPost, err := apiCfg.dbPosts.getByURL(post.Link, apiCfg.dbOperator)
+
+		if err != nil {
+			log.Println("error on getting post", err)
+		}
+
+		if dbPost.URL == "" {
+			log.Println("saving post")
+			apiCfg.dbPosts.save(PostsDBModel{
+				Title:       post.Link,
+				Description: post.Description,
+				URL:         post.Link,
+				CreatedAt:   time.Now().String(),
+				UpdatedAt:   time.Now().String(),
+				FeedId:      dbPost.FeedId,
+				PublishedAt: post.CreatedAt,
+			}, apiCfg.dbOperator)
+		} else {
+			log.Println("updating post")
+			dbPost.Title = post.Link
+			dbPost.Description = post.Description
+			apiCfg.dbPosts.update(dbPost, apiCfg.dbOperator)
+		}
 	}
 
 	log.Printf("Feed %s collected, %v posts found", feed.Name, len(rssFeed))

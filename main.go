@@ -16,6 +16,7 @@ type apiConfig struct {
 	dbOperator   *DB
 	dbFeed       *DBFeed
 	dbFeedFollow *DBFeedFollows
+	dbPosts      *DBPosts
 }
 
 type Bar struct {
@@ -38,12 +39,14 @@ func main() {
 	dbUser := &DBUser{}
 	dbFeed := &DBFeed{}
 	dbFeedFollows := &DBFeedFollows{}
+	dbPosts := &DBPosts{}
 
 	apiCfg := apiConfig{
 		dbUser:       dbUser,
 		dbOperator:   dbOperator,
 		dbFeed:       dbFeed,
 		dbFeedFollow: dbFeedFollows,
+		dbPosts:      dbPosts,
 	}
 
 	go startScraping(apiCfg, 10, time.Minute)
