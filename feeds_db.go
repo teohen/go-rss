@@ -66,6 +66,14 @@ func (dbFeed *DBFeed) getNextFeedsToFetch(limit int, dbOperator *DB) ([]FeedsDBM
 		return feedsToFetch, errors.New("error trying to get feeds to fetch")
 	}
 
+	if len(allFeeds) == 0 {
+		return feedsToFetch, nil
+	}
+
+	if len(allFeeds) < limit {
+		limit = len(allFeeds)
+	}
+
 	sort.Slice(allFeeds, func(i, j int) bool {
 		if allFeeds[i].LastFetchedAt == "" {
 			return false

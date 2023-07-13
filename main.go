@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -26,18 +27,6 @@ type Bar struct {
 
 func main() {
 
-	// feed, erro := urlToFeed("https://raw.githubusercontent.com/teohen/go-rss/main/posts/posts.json")
-	foo := []Bar{}
-
-	getJson("https://demo7799712.mockable.io/posts", &foo)
-
-	println(foo[1].Title)
-	/* if erro != nil {
-		log.Fatal(erro)
-	}
-
-	fmt.Println(feed) */
-
 	godotenv.Load()
 
 	portString := os.Getenv("PORT")
@@ -56,6 +45,8 @@ func main() {
 		dbFeed:       dbFeed,
 		dbFeedFollow: dbFeedFollows,
 	}
+
+	go startScraping(apiCfg, 10, time.Minute)
 
 	router := chi.NewRouter()
 
