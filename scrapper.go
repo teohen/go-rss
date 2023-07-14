@@ -61,7 +61,7 @@ func scrapeFeed(wg *sync.WaitGroup, apiCfg apiConfig, feed FeedsDBModel) {
 				URL:         post.Link,
 				CreatedAt:   time.Now().String(),
 				UpdatedAt:   time.Now().String(),
-				FeedId:      dbPost.FeedId,
+				FeedId:      feed.Id,
 				PublishedAt: post.CreatedAt,
 			}, apiCfg.dbOperator)
 		} else {

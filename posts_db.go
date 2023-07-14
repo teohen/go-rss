@@ -112,3 +112,26 @@ func (dbPost *DBPosts) getByURL(url string, dbOperator *DB) (PostsDBModel, error
 
 	return post, nil
 }
+
+func (dbPost *DBPosts) getByFeedId(feedId string, dbOperator *DB) ([]PostsDBModel, error) {
+	var posts []PostsDBModel
+
+	if !dbOperator.isConnected() {
+		dbOperator.connect()
+	}
+
+	msg, err := dbOperator.execute(feedId, "get by feedId")
+
+	if err != nil {
+		fmt.Println(fmt.Printf("ERROR: %s", err))
+		return posts, errors.New(fmt.Sprintf("error trying to get post by feed id %s", msg))
+	}
+
+	for _, post := range dbPost.collection {
+		if post.FeedId == feedId {
+			posts = append(posts, post)
+		}
+	}
+
+	return posts, nil
+}

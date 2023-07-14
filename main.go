@@ -49,7 +49,7 @@ func main() {
 		dbPosts:      dbPosts,
 	}
 
-	go startScraping(apiCfg, 10, time.Minute)
+	go startScraping(apiCfg, 10, time.Minute*3)
 
 	router := chi.NewRouter()
 
@@ -72,6 +72,7 @@ func main() {
 	v1Router.Post("/feed-follow", apiCfg.middlewareAuth(apiCfg.handlerCreateFeedFollow))
 	v1Router.Get("/feed-follow", apiCfg.middlewareAuth(apiCfg.handlerGetFeedFollow))
 	v1Router.Delete("/feed-follow/{id}", apiCfg.middlewareAuth(apiCfg.handlerDeleteFeedFollow))
+	v1Router.Get("/posts", apiCfg.middlewareAuth(apiCfg.handlerGetNewestPosts))
 
 	router.Mount("/v1", v1Router)
 

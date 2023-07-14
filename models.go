@@ -72,3 +72,35 @@ func databaseFeedFollowsToFeedFollows(dbFeedFollows []FeedFollowsDBModel) []Feed
 	}
 	return feedFollows
 }
+
+type Post struct {
+	Id          string `json:"id"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	PublishedAt string `json:"published_at"`
+	URL         string `json:"url"`
+	FeedId      string `json:"feed_id"`
+}
+
+func databasePostToPost(dbPost PostsDBModel) Post {
+	return Post{
+		Id:          dbPost.Id,
+		CreatedAt:   dbPost.CreatedAt,
+		UpdatedAt:   dbPost.UpdatedAt,
+		Title:       dbPost.Title,
+		Description: dbPost.Description,
+		PublishedAt: dbPost.PublishedAt,
+		URL:         dbPost.URL,
+		FeedId:      dbPost.FeedId,
+	}
+}
+
+func databasesPostsToPosts(dbPosts []PostsDBModel) []Post {
+	posts := []Post{}
+	for _, dbPost := range dbPosts {
+		posts = append(posts, databasePostToPost(dbPost))
+	}
+	return posts
+}
